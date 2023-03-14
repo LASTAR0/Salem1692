@@ -42,6 +42,9 @@ public class CardManager : UdonSharpBehaviour
     [Header("Const")]
     public int NUM_TRYAL_CARDS = 3;
 
+    [Header("Synced"), UdonSynced]
+    public int syncSalemdeckCount = 0;
+
     private const int NUM_SALEM_CARDS = 3;
 
     private int[] numNotWitch = {18, 23, 28, 32, 29, 33, 27};
@@ -71,6 +74,7 @@ public class CardManager : UdonSharpBehaviour
         foreach(Card c in allCards) {
             c.OnReset();
         }
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "HideNightCard");
         salemDeck = new Card[Card_Salem.Length];
         charDeck = new Card[Card_TownHall.Length];
     }
@@ -78,7 +82,8 @@ public class CardManager : UdonSharpBehaviour
     public void AddSpecialAndShuffle() {
         AddSpecialCard(Conspyracy);
         Shuffle(salemDeck);
-        AddSpecialCard(Night);
+        //AddSpecialCard(Night);
+        SyncDeckCount(salemDeck.Length);
     }
 
     public void CreateDeckFromDiscards() {
@@ -91,11 +96,12 @@ public class CardManager : UdonSharpBehaviour
             }
         }
         Shuffle(salemDeck);
-        AddNight(ref salemDeck);
+        //AddNight(ref salemDeck);
         foreach (Card c in salemDeck) {
-            c.OnReset();
+            c.OnReset(); 
         }
         discard.SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "OnReset");
+        SyncDeckCount(salemDeck.Length);
     }
     public void TakeOwnerFromDiscards() {
         foreach(Card c in discard.cards) {
@@ -142,6 +148,7 @@ public class CardManager : UdonSharpBehaviour
         foreach(Card c in Card_Kill) {
             c.MoveToCard(killSlot.transform);
         }
+        SyncDeckCount(salemDeck.Length);
     }
     private void SetSalem() {
         Array.Copy(Card_Salem, salemDeck, Card_Salem.Length);
@@ -205,9 +212,12 @@ public class CardManager : UdonSharpBehaviour
             Skip(ref salemDeck, 1);
             return temp;
         }
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "ShowNightCard");
         Debug.Log("salemDeck is Empty");
         return null;
     }
+    public void ShowNightCard() { Night.gameObject.SetActive(true); }
+    public void HideNightCard() { Night.gameObject.SetActive(false); }
     private void Skip(ref Card[] deck, int num) {
         Card[] newDeck = new Card[deck.Length - num];
         for (int i = 0; i < newDeck.Length; i++) {
@@ -222,6 +232,10 @@ public class CardManager : UdonSharpBehaviour
             deck[i] = deck[j];
             deck[j] = temp;
         }
+    }
+    private void SyncDeckCount(int cnt) {
+        syncSalemdeckCount = cnt;
+        RequestSerialization();
     }
 
     private void Start() {
