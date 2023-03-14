@@ -19011,7 +19011,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 283e740a7424d2b41b437ce1dbe94972, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1695d508957742a4bb077a34894e45fa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -24284,7 +24284,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Master Name
+  m_Text: 
 --- !u!222 &875737781
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24310,7 +24310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &876015816
 AudioListener:
   m_ObjectHideFlags: 0
